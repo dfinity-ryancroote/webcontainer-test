@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@webcontainer/api": "^1.3.0-internal.1",
-    "motoko": "^3.7.1"
+    "didc-test": "^1.0.0",
+    "motoko": "^3.7.1",
+    "vite-plugin-wasm": "^3.3.0"
   }
 }

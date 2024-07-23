@@ -1,6 +1,9 @@
 import { FileNode, WebContainer } from '@webcontainer/api';
 import { files } from './files';
 import './style.css';
+import * as didc from 'didc-test';
+
+console.log(didc.generate_js("service : { hello: () -> (text) query; }"));
 
 document.querySelector('#app')!.innerHTML = `
   <div class="container">
@@ -35,18 +38,6 @@ async function installDependencies() {
   return installProcess.exit;
 }
 
-async function curlDidc() {
-  const url = "https://raw.githubusercontent.com/dfinity/node-motoko/main/versions/latest/didc.min.js";
-  const curlProcess = await webcontainerInstance.spawn('curl', [url]);
-  curlProcess.output.pipeTo(new WritableStream({
-    write(data) {
-      console.log("curl", data);
-    }
-  }));
-  // Wait for install command to exit
-  return curlProcess.exit;
-}
-
 async function startDevServer() {
   // Run `npm run start` to start the Express app
   await webcontainerInstance.spawn('npm', ['run', 'start']);
@@ -69,11 +60,6 @@ window.addEventListener('load', async () => {
   const exitCode = await installDependencies();
   if (exitCode !== 0) {
     throw new Error('Installation failed');
-  };
-
-  const curlExitCode = await curlDidc();
-  if (curlExitCode !== 0) {
-    throw new Error('Curl - Installation failed');
   };
 
   startDevServer();

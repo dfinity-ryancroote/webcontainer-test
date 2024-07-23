@@ -1,15 +1,6 @@
 
 import { FileSystemTree } from "@webcontainer/api";
 
-/*
-console.log(response.status);
-const didc = await response.blob();
-console.log(didc);
-const buff = await didc.arrayBuffer();
-console.log(buff);
-const arr = new Uint8Array(buff);
-console.log(arr);
-*/
 
 /** @satisfies {import('@webcontainer/api').FileSystemTree} */
 export const files: FileSystemTree = {
@@ -18,6 +9,7 @@ export const files: FileSystemTree = {
       contents: `
   import express from 'express';
   import mo from 'motoko';
+  import * as didc from 'didc-test';
   const app = express();
   const port = 3111;
   
@@ -30,7 +22,9 @@ mo.write('Main.mo', \`
     \`);
 
   app.get('/', (req, res) => {
-    res.send(mo.wasm('Main.mo'));
+    const did = mo.candid('Main.mo');
+    const binding = didc.generate_ts(did);
+    res.send(binding);
   });
   
   app.listen(port, () => {
@@ -47,17 +41,13 @@ mo.write('Main.mo', \`
     "dependencies": {
       "express": "latest",
       "nodemon": "latest",
-      "motoko": "latest"
+      "motoko": "latest",
+      "didc-test": "latest"
     },
     "scripts": {
-      "start": "nodemon --watch './' index.js"
+      "start": "node --experimental-wasm-modules index.js"
     }
   }`,
     },
-  },
-  'didc.min.js': {
-    file: {
-      contents: ``
-    }
   }
 };
